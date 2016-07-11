@@ -4,3 +4,4 @@ Sky is being developed as a javascript template engine. The goal of sky is to im
 
 Relpacing opening and close tags `<tag></tag>` with a simple single opening/closing tag `#tag#`
 Id's need to be defined via parameters  `<tag id="myId">` to ` #tag(id="myId")`
+Render objects like `res.render('index', { message: 'Hello there!'});` in page with ` #{message}")`
