@@ -1,14 +1,35 @@
 const fs = require('fs'); // this engine requires the fs module
 const readline = require('readline');
 
-module.exports = function (filePath,callback) {
+module.exports = function (filePath,options,callback) {
+    var stack=[];
+    
+    const add = function(block,skip){
+        if(skip)
+            return block ; 
+        var temp = "<"+block+">" ;
+        var stemp = temp.substring(0, temp.indexOf(' ')); 
+        // Check if opening or closing # tage 
+        if(temp == '<>'){
+            return (stack.pop()); 
+        }else if(stemp === ''){
+            stack.push("</"+block+">"); 
+            return (temp); 
+        }else{
+            stack.push("</"+stemp+">"); 
+            return (temp); 
+        }
+    }; 
+    const getProp = function(parm){
+        return (options[parm]); 
+    }; 
     const readable = fs.createReadStream(filePath, {
         encoding: 'utf8',
         fd: null,
     });
 
     readable.on('readable', function() {
-    var next='', block='', buffer='', stack=[];
+        var next='', block='',buffer='',skip=false; 
         while (null !== (next = readable.read(1))) {
             // html tag 
             if(next == '#'){
@@ -18,19 +39,24 @@ module.exports = function (filePath,callback) {
                         block+=' '; 
                         continue ; 
                     }
+                    if(next ==='{'){
+                        skip = true ; 
+                        var obj=''; 
+                        while(null !== (next = readable.read(1))){
+                            if(next === '}')
+                                break ; 
+                            obj+=next; 
+                        }
+                        block+=getProp(obj); 
+                        continue ; 
+                    }
                     if (!next.match(/[a-z]/i) && !next.match(/["'=]/gi))
                         break ; 
                     block+=next; 
                 }
-                var temp = "<"+block+">" ;
-                // Check if opening or closing # tage 
-                if(temp == '<>'){
-                    buffer += stack.pop(); 
-                }else{
-                    buffer += temp ;  
-                    stack.push("</"+block+">"); 
-                }
+                buffer += add(block,skip); 
                 block=''; 
+                skip=false; 
             }
             // Extends tag
             else if(next == '@'){
