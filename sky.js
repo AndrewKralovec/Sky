@@ -16,7 +16,7 @@ module.exports = function (filePath,options,callback) {
             stack.push("</"+block+">"); 
             return (temp); 
         }else{
-            stack.push("</"+stemp+">"); 
+            stack.push(stemp.replace('<','</')+">");
             return (temp); 
         }
     }; 
