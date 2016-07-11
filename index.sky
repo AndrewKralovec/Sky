@@ -1,6 +1,6 @@
 #html
     #body
         #p(id='First') Here is some text #
-        #p(id='Second') Next Line #
+        #p #{message} #
     #
 #
