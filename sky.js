@@ -74,6 +74,10 @@ class Sky {
                     file+=next; 
                 }
                 // Load that file rendered text 
+                // Load that file rendered text 
+                var sky = new Sky('./views/'+file+'.sky',this.options); 
+                this.malloc(sky.getSize()); 
+                buffer += sky.render(); 
             }
             // Content
             else{

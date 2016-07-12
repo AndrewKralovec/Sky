@@ -1,6 +1,7 @@
 #html
     #body
-        #p(id='First') Here is some text #
+        #h2(id='First') #{title} #
         #p #{message} #
+        @page
     #
 #
